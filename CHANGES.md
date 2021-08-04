@@ -2,6 +2,8 @@
 
 # cordova-sqlite-evplus-ext-free 0.6.0-dev
 
+- SQLite 3.36.0 update for multiple platforms (...)
+
 # cordova-sqlite-evplus-ext-free 0.5.0-rc3
 
 - apply SQLite 3.34.0 update
