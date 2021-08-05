@@ -532,8 +532,8 @@ var mytests = function() {
           });
         }, MYTIMEOUT);
 
-        // TBD ENCODING ISSUE WITH emojis and other 4-octet UTF-8 characters
-        // RESOLVED on Android (default Android evcore NDK implementation)
+        // XXX ENCODING ISSUE NOW RESOLVED with emojis and other 4-byte UTF-8 characters
+        // on default Android evcore NDK implementation
         // ref:
         // - litehelpers/Cordova-sqlite-evcore-extbuild-free#44
         // - litehelpers/Cordova-sqlite-storage#564
@@ -588,6 +588,7 @@ var mytests = function() {
           });
         }, MYTIMEOUT);
 
+        // XXX ENCODING ISSUE NOW RESOLVED with emojis and other 4-byte UTF-8 characters [...]
         // ref:
         // - litehelpers/Cordova-sqlite-evcore-extbuild-free#43
         // - litehelpers/Cordova-sqlite-storage#564
@@ -1155,7 +1156,7 @@ var mytests = function() {
           });
         }, MYTIMEOUT);
 
-        it(suiteName + "INSERT inline BLOB value (X'FFD1FFD2') and check stored data [XXX PLUGIN ISSUES REPRODUCED: SELECT BLOB returns data with incorrect length on Android (default evcore NDK implementation); SELECT BLOB VALUE ERROR on Android (androidDatabaseProvider: 'system') & Windows; MISSING result data column on iOS/macOS; actual result value is IGNORED on (WebKit) Web SQL & plugin on other platforms]", function(done) {
+        it(suiteName + "INSERT inline BLOB value (X'FFD1FFD2') and check stored data [PLUGIN ISSUES REPRODUCED: SELECT BLOB returns data with incorrect length on Android (default evcore NDK implementation); SELECT BLOB VALUE ERROR on Android (androidDatabaseProvider: 'system') & Windows; SKIP SELECT BLOB VALUE TEST on default Android evcore NDK implementation TO AVOID KNOWN CRASH; MISSING result data column on iOS/macOS; actual result value is IGNORED on (WebKit) Web SQL & plugin on other platforms]", function(done) {
           var db = openDatabase('INSERT-inline-BLOB-value-FFD1FFD2-and-check-stored-data.db', '1.0', 'Demo', DEFAULT_SIZE);
 
           db.transaction(function(tx) {
@@ -1176,7 +1177,7 @@ var mytests = function() {
                   expect(item).toBeDefined();
                   expect(item.hexValue).toBe('FFD1FFD2');
 
-                  // XXX TBD STOP HERE DUE TO KNOWN CRASH on this evplus plugin version on iOS/macOS & Android
+                  // XXX [TBD] STOP HERE DUE TO KNOWN CRASH on this evplus plugin version on iOS/macOS & Android
                   // (continue with this test on (WebKit) Web SQL (Android/iOS/browser) & plugin on Windows)
                   if (isAppleMobileOS || isMac || (!isWebSql && isAndroid && !isImpl2)) return done();
 

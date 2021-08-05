@@ -4,13 +4,13 @@ Native SQLite component with API based on HTML5/[Web SQL (DRAFT) API](http://www
 - Android
 - iOS
 - macOS ("osx" platform)
-- Windows 10 (UWP) DESKTOP and MOBILE (see below for major limitations)
+- Windows 10 (UWP) DESKTOP ~~and MOBILE~~ (see below for major limitations)
 
 <!-- [TBD] HIDE browser usage notes for now (at least):
 Browser platform is currently supported with some limitations as described in [browser platform usage notes](#browser-platform-usage-notes) section below, will be supported with more features such as numbered parameters and SQL batch API in the near future.
 - -->
 
-This plugin version uses a special _non-standard_ Android NDK sqlite database access library (C-language implementation), with some premium improvements to the internal JSON interface between the Javascript and native Android implementation, to provide significant performance and memory usage improvements on the Android platform.
+This plugin version uses a special, non-standard Android NDK sqlite database access library (C-language implementation), with some premium improvements to the internal JSON interface between the Javascript and native Android implementation, to provide significant performance and memory usage improvements on the Android platform.
 
 This plugin version is available under GPL v3 (<https://www.gnu.org/licenses/gpl-3.0.txt>) or commercial license options and includes components available under the MIT and Apache 2.0 licenses listed in [LICENSE.md](./LICENSE.md). Contact for commercial license: <sales@litehelpers.net>
 
@@ -38,11 +38,17 @@ New SQLite plugin design with a simpler API is in progress with a working demo -
 
 ## Breaking changes coming soon
 
-in an upcoming major release - see [`xpbrew/cordova-sqlite-storage#922`](https://github.com/xpbrew/cordova-sqlite-storage/issues/922):
+in an upcoming major release - see [`xpbrew/cordova-sqlite-storage#922`](https://github.com/xpbrew/cordova-sqlite-storage/issues/922)
 
-- drop support for Android pre-5.1, which will also be dropped by `cordova-android`, including deprecated `armeabi` target (superseded by `armeabi-v7a`, seems to be not supported by Android 5.0) - more info in [`xpbrew/cordova-sqlite-storage#922`](https://github.com/xpbrew/cordova-sqlite-storage/issues/922)
+some highlights:
+
 - error `code` will always be `0` (which is already the case on Windows); actual SQLite3 error code will be part of the error `message` member whenever possible (see [`xpbrew/cordova-sqlite-storage#821`](https://github.com/xpbrew/cordova-sqlite-storage/issues/821))
 - drop support for location: 0-2 values in openDatabase call (please use `location: 'default'` or `iosDatabaseLocation` setting in openDatabase as documented below)
+- throw an exception in case of `androidDatabaseImplementation: 2` setting which is now superseded by `androidDatabaseProvider: 'system'` setting
+
+under consideration:
+
+- remove `androidLockWorkaround: 1` option if not needed any longer - [`xpbrew/cordova-sqlite-storage#925`](https://github.com/xpbrew/cordova-sqlite-storage/issues/925)
 
 ## About this plugin version
 
@@ -60,7 +66,7 @@ __XXX TODO evplus feature MISSING in this plugin version: iOS performance enhanc
 
 ### Multiple SQLite problem on Android
 
-This plugin uses non-standard [brodybits/android-sqlite-evcore-native-driver-free (evcore-sqlite3-eu-support branch)](https://github.com/brodybits/android-sqlite-evcore-native-driver-free/tree/evcore-sqlite3-eu-support) sqlite database access implementation on Android. In case an application access the SAME database using multiple plugins there is a risk of data corruption ref: [xpbrew/cordova-sqlite-storage#626](https://github.com/xpbrew/cordova-sqlite-storage/issues/626)) as described in <http://ericsink.com/entries/multiple_sqlite_problem.html> and <https://www.sqlite.org/howtocorrupt.html>.
+__This plugin uses non-standard sqlite database access implementation on Android from <https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free/tree/custom-evcore-eu-support-2021>. In case an application access the SAME database using multiple plugins there is a risk of data corruption ref: [storesafe/cordova-sqlite-storage#626](https://github.com/storesafe/cordova-sqlite-storage/issues/626) as described in <http://ericsink.com/entries/multiple_sqlite_problem.html> and <https://www.sqlite.org/howtocorrupt.html>.__
 
 The workaround is to use the `androidDatabaseProvider: 'system'` setting as described in the [Android database provider](#android-database-provider) section below:
 
@@ -198,8 +204,8 @@ See the [Sample section](#sample) for a sample with a more detailed explanation 
   - Cordova versions older than `6.0.0` are missing the `cordova-ios@4.0.0` security fixes.
 - This plugin version includes the following extra (non-standard) features:
   - BASE64 integrated from [brodybits / sqlite3-base64](https://github.com/brodybits/sqlite3-base64), using [brodybits / libb64-encode](https://github.com/brodybits/libb64-encode) (based on <http://libb64.sourceforge.net/> by Chris Venter, public domain)
-  -  REGEXP for Android (default [Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) database access implementation), iOS, and macOS using [brodybits / sqlite3-regexp-cached](https://github.com/brodybits/sqlite3-regexp-cached) (based on <http://git.altlinux.org/people/at/packages/?p=sqlite3-pcre.git> by Alexey Tourbin, public domain)
-- SQLite (...) included when building (all platforms), with the following _build-time_ definitions:
+  - _REGEXP for Android (default evcore NDK database implementation), iOS, and macOS using [brodybits / sqlite3-regexp-cached](https://github.com/brodybits/sqlite3-regexp-cached) (based on <http://git.altlinux.org/people/at/packages/?p=sqlite3-pcre.git> by Alexey Tourbin, public domain)_
+- SQLite __`3.36.0`__ included when building (all platforms), with the following compile-time definitions:
   - `SQLITE_THREADSAFE=1`
   - `SQLITE_DEFAULT_SYNCHRONOUS=3` (EXTRA DURABLE build setting) ref: [xpbrew/cordova-sqlite-storage#736](https://github.com/xpbrew/cordova-sqlite-storage/issues/736)
   - `SQLITE_LOCKING_STYLE=1` on iOS/macOS ONLY
@@ -226,23 +232,28 @@ See the [Sample section](#sample) for a sample with a more detailed explanation 
   - <https://www.sqlite.org/c3ref/c_dbconfig_defensive.html>
   - <https://www.sqlite.org/releaselog/3_26_0.html>
 - The iOS database location is now mandatory, as documented below.
-- _This plugin version_ supports the use of two (2) possible Android sqlite database implementations:
-  - default: high-performance, lightweight [android-sqlite-evcore-native-driver-free (using evcore-sqlite3-eu-support branch)](https://github.com/brodybits/android-sqlite-evcore-native-driver-free/tree/evcore-sqlite3-eu-support) NDK library (C-language implementation)
+- This version branch supports the use of two (2) possible Android sqlite database implementations:
+  - default: high-performance, lightweight NDK library (C-language implementation) from: <https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free/tree/custom-evcore-eu-support-2021>
   - optional: Android system database implementation, using the `androidDatabaseProvider: 'system'` setting in `sqlitePlugin.openDatabase()` call as described in the [Android database provider](#android-database-provider) section below.
-- The following feature is available in [litehelpers / cordova-sqlite-ext](https://github.com/litehelpers/cordova-sqlite-ext) (with permissive license terms, missing Android-sqlite-evcore-native-driver performance enhancements), MISSING in this plugin version:
+- The following feature is available in __[brodybits / cordova-sqlite-ext](https://github.com/brodybits/cordova-sqlite-ext)__ (with permissive license terms, missing performance enhancements from `android-sqlite-evcore-ndk-driver-free`), MISSING in this plugin version:
   - Pre-populated database (Android/iOS/macOS/Windows)
 - Windows platform version using a customized version of the performant [doo / SQLite3-WinRT](https://github.com/doo/SQLite3-WinRT) C++ component based on the [brodybits/SQLite3-WinRT sync-api-fix branch](https://github.com/brodybits/SQLite3-WinRT/tree/sync-api-fix), with the following known limitations:
   - This plugin version branch has dependency on platform toolset libraries included by Visual Studio 2017 ref: [xpbrew/cordova-sqlite-storage#580](https://github.com/xpbrew/cordova-sqlite-storage/issues/580). Visual Studio 2015 is now supported by [`brodybits/cordova-sqlite-legacy`](https://github.com/brodybits/cordova-sqlite-legacy) (permissive license terms, no performance enhancements for Android) and [`brodybits/cordova-sqlite-evcore-legacy-ext-common-free`](https://github.com/brodybits/cordova-sqlite-evcore-legacy-ext-common-free) (GPL or commercial license terms, with performance enhancements for Android). UNTESTED workaround for Visual Studio 2015: it *may* be possible to support this plugin version on Visual Studio 2015 Update 3 by installing platform toolset v141.)
   - Visual Studio components needed: Universal Windows Platform development, C++ Universal Windows Platform tools. A recent version of Visual Studio 2017 will offer to install any missing feature components.
+  - Target Windows version: `10.0.17763.0` (Windows 10 build 17763 aka October 2018 Update or version 1809) ref: <https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-17763>
+  - Minimum Windows version `10.0.15063.0` (Windows 10 build 15063 aka Creators Update or version 1703) ref: <https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-15063>
   - It is NOT possible to use this plugin with the default "Any CPU" target. A specific target CPU type MUST be specified when building an app with this plugin.
+  - ARM target CPU for Windows Mobile is no longer supported.
   - The `SQLite3-WinRT` component in `src/windows/SQLite3-WinRT-sync` is based on [doo/SQLite3-WinRT commit f4b06e6](https://github.com/doo/SQLite3-WinRT/commit/f4b06e6a772a2688ee0575a8034b55401ea64049) from 2012, which is missing the asynchronous C++ API improvements. There is no background processing on the Windows platform.
   - Truncation issue with UNICODE `\u0000` character (same as `\0`)
   - INCONSISTENT error code (0) and INCORRECT error message (missing actual error info) in error callbacks ref: [xpbrew/cordova-sqlite-storage#539](https://github.com/xpbrew/cordova-sqlite-storage/issues/539)
   - Not possible to SELECT BLOB column values directly. It is recommended to use built-in HEX function to retrieve BLOB column values, which should work consistently across all platform implementations as well as (WebKit) Web SQL. Non-standard BASE64 function to SELECT BLOB column values in Base64 format is supported by [`brodybits/cordova-sqlite-ext`](https://github.com/brodybits/cordova-sqlite-ext) (permissive license terms) and [litehelpers / Cordova-sqlite-evcore-extbuild-free](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free) (GPL or commercial license terms).
   - Windows platform version uses `UTF-16le` internal database encoding while the other platform versions use `UTF-8` internal encoding. (`UTF-8` internal encoding is preferred ref: [xpbrew/cordova-sqlite-storage#652](https://github.com/xpbrew/cordova-sqlite-storage/issues/652))
   - Known issue with database names that contain certain US-ASCII punctuation and control characters (see below)
-- The macOS platform version ("osx" platform) is not tested in a release build and should be considered pre-alpha.
-- Android versions supported: 3.0 - 9.0 (API level 11 - 28), depending on Cordova version ref: <https://cordova.apache.org/docs/en/latest/guide/platforms/android/>
+- The **macOS** platform version (**"osx" platform**) is not tested in a release build and should be considered pre-alpha with known issues:
+  - `cordova prepare osx` is needed before building and running from Xcode
+  - known issue between `cordova-osx` and Cordova CLI `10.0.0`: <https://github.com/apache/cordova-osx/issues/106>
+- Android versions supported: _minimum 5.1, see also: <https://cordova.apache.org/docs/en/latest/guide/platforms/android/>_
 - iOS versions supported: 8.x / 9.x / 10.x / 11.x / 12.x (see [deviations section](#deviations) below for differences in case of WKWebView)
 - FTS3, FTS4, and R-Tree are fully tested and supported for all target platforms in this version branch.
 - Default `PRAGMA journal_mode` setting (*tested*):
@@ -255,9 +266,10 @@ See the [Sample section](#sample) for a sample with a more detailed explanation 
 ## Announcements
 
 - This plugin version branch includes premium improvements to the internal JSON interface between Javascript and native parts on Android, iOS, and macOS which improves the performance and resolves memory issues in case of some very large SQL batches.
-- This plugin version includes additional JavaScript performance enhancements with special benefit for Android.
+- Custom Android database location (supports external storage directory)
+- For Android platform this plugin version uses the lightweight, performant database access implementation from <https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free/tree/custom-evcore-eu-support-2021>, with some premium improvements to the internal JSON interface (by default configuration), now with a solution for Android 11 devices and target SDK 30 (FIXES [storesafe/cordova-sqlite-evcore-extbuild-free#56](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues/56)). The [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) is a NDK library (with C-language implementation) for JSON and SQL statement handling which processes large batches in less than half the time compared to [`cordova-sqlite-storage`](https://github.com/storesafe/cordova-sqlite-storage), as measured by: [`brodybits/cordova-sqlite-perftest`](https://github.com/brodybits/cordova-sqlite-perftest).
 - This plugin version includes the following extra (non-standard) features: BASE 64 (all platforms Android/iOS/macOS/Windows), REGEXP (Android/iOS/macOS)
-- Using recent version of SQLite3 (`3.30.1`) with window functions and recent security updates:
+- _Using version of SQLite3 (...) with window functions and recent security updates:_
   - [xpbrew/cordova-sqlite-storage#895](https://github.com/xpbrew/cordova-sqlite-storage/issues/895)
   - [xpbrew/cordova-sqlite-storage#867](https://github.com/xpbrew/cordova-sqlite-storage/issues/867)
   - [xpbrew/cordova-sqlite-storage#837](https://github.com/xpbrew/cordova-sqlite-storage/issues/837)
@@ -279,10 +291,8 @@ and window functions
 - The Lawnchair adapter is now moved to [litehelpers / cordova-sqlite-lawnchair-adapter](https://github.com/litehelpers/cordova-sqlite-lawnchair-adapter).
 - This plugin version now supports SELECT BLOB data in Base64 format on all platforms in addition to REGEXP (Android/iOS/macOS) ~~and pre-populated database (all platforms - FUTURE TODO)~~.
 - [brodybits / sql-promise-helper](https://github.com/brodybits/sql-promise-helper) provides a Promise-based API wrapper.
-- [nolanlawson / pouchdb-adapter-cordova-sqlite](https://github.com/nolanlawson/pouchdb-adapter-cordova-sqlite) supports this plugin along with other implementations such as [nolanlawson / sqlite-plugin-2](https://github.com/nolanlawson/sqlite-plugin-2) and [Microsoft / cordova-plugin-websql](https://github.com/Microsoft/cordova-plugin-websql).
-- Custom Android database location (supports external storage directory)
+- _[`pouchdb-adapter-cordova-sqlite`](https://github.com/nolanlawson/pouchdb-adapter-cordova-sqlite) supports this plugin along with other implementations such as [nolanlawson / sqlite-plugin-2](https://github.com/nolanlawson/sqlite-plugin-2) and [Microsoft / cordova-plugin-websql](https://github.com/Microsoft/cordova-plugin-websql)._
 - macOS ("osx" platform) is now supported
-- For the Android platform this plugin version uses the lightweight, performant [litehelpers / Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) database access implementation, with some premium improvements to the internal JSON interface (by default configuration). [Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) is a NDK library (with C-language implementation) for JSON and SQL statement handling which processes large batches in less than half the time compared to [litehelpers / Cordova-sqlite-storage](https://github.com/litehelpers/Cordova-sqlite-storage), as measured by: [brodybits / Cordova-sql-test-app](https://github.com/brodybits/Cordova-sql-test-app)
 - Published [brodybits / Cordova-quick-start-checklist](https://github.com/brodybits/Cordova-quick-start-checklist) and [brodybits / Avoiding-some-Cordova-pitfalls](https://github.com/brodybits/Avoiding-some-Cordova-pitfalls).
 - Self-test functions to verify proper installation and operation of this plugin
 - More explicit `openDatabase` and `deleteDatabase` `iosDatabaseLocation` option
@@ -333,7 +343,9 @@ More resources can be found by <https://www.google.com/search?q=cordova+tutorial
 In addition, this guide assumes a basic knowledge of some key JavaScript concepts such as variables, function calls, and callback functions. There is an excellent explanation of JavaScript callbacks at <http://cwbuecheler.com/web/tutorials/2013/javascript-callbacks/>.
 
 **MAJOR TIPS:** As described in the [Installing](#installing) section:
-- It is recommended to use the `--save` flag when installing plugins to track them in `config.xml` _in case of Cordova CLI pre-7.0 (automatic starting with Cordova CLI 7.0)_. If all plugins are tracked in `config.xml` then there is no need to commit the `plugins` subdirectory tree into the source repository.
+
+- In case of extra-old Cordova CLI pre-7.0, it is recommended to use the `--save` flag when installing plugins to add them to `config.xml` / `package.json`. (This is automatic starting with Cordova CLI 7.0.)
+- Assuming that all plugins are added to `config.xml` or `package.json`, there is no need to commit the `plugins` subdirectory tree into the source repository.
 - In general it is *not* recommended to commit the `platforms` subdirectory tree into the source repository.
 
 **NOTICE:** This plugin is only supported with the Cordova CLI. This plugin is *not* supported with other Cordova/PhoneGap systems such as PhoneGap CLI, PhoneGap Build, Plugman, Intel XDK, Webstorm, etc.
@@ -576,31 +588,29 @@ See **Security of sensitive data** in the [Security](#security) section above.
 - In case of ignored INSERT OR IGNORE statement WebKit Web SQL (Android/iOS) reports insertId with an old INSERT row id value while the plugin reports insertId: undefined.
 - In case of a SQL error handler that does not recover the transaction, WebKit Web SQL (Android/iOS) would incorrectly report error code 0 while the plugin would report the same error code as in the SQL error handler. (In case of an error with no SQL error handler then Android/iOS WebKit Web SQL would report the same error code that would have been reported in the SQL error hander.)
 - In case a transaction function throws an exception, the message and code if present are reported by the plugin but *not* by (WebKit) Web SQL.
-- SQL error messages are inconsistent on Windows and less descriptive on Android in case of the default [Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) implementation.
+- SQL error messages are inconsistent on Windows and less descriptive on Android in case of the default [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) implementation.
 - There are some other differences in the SQL error messages reported by WebKit Web SQL and this plugin.
 
 <!-- END Deviations -->
 
 ## Known issues
 
+- Possible crashes with certain cases of invalid binary string data on Android
 - The iOS/macOS platform versions do not support certain rapidly repeated open-and-close or open-and-delete test scenarios due to how the implementation handles background processing
-- HIGH PRIORITY TODO: The default [Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) database access implementation does not currently handle control characters such as vertical tab, form feed, or backspace characters properly ref: [litehelpers/Cordova-sqlite-evcore-extbuild-free#28](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free/issues/28)
-- _Incorrect handling of emoji and other 4-byte UTF-8 characters on Android on default [Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) NDK access implementation as described in: [litehelpers/Cordova-sqlite-evcore-extbuild-free#44](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free/issues/44), [xpbrew/cordova-sqlite-storage#564](https://github.com/xpbrew/cordova-sqlite-storage/issues/564) (this is not an issue when using the `androidDatabaseProvider: 'system'` setting)_
+- The default [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) database access implementation does not currently handle control characters such as vertical tab, form feed, or backspace characters properly ref: [storesafe/cordova-sqlite-evcore-extbuild-free#28](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues/28)
 - It is possible to request a SQL statement list such as "SELECT 1; SELECT 2" within a single SQL statement string, however the plugin will only execute the first statement and silently ignore the others ref: [xpbrew/cordova-sqlite-storage#551](https://github.com/xpbrew/cordova-sqlite-storage/issues/551)
 - Execution of INSERT statement that affects multiple rows (due to SELECT cause or using TRIGGER(s), for example) reports incorrect rowsAffected on Android with use of the `androidDatabaseProvider: 'system'` setting.
-- FIXED in this plugin version: ~~Memory issue observed when adding a large number of records due to the JSON implementation which is improved in [litehelpers / Cordova-sqlite-evcore-extbuild-free](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free) (GPL or commercial license terms)~~
+- FIXED in this plugin version: ~~Memory issue observed when adding a large number of records due to the JSON implementation which is improved in [storesafe / cordova-sqlite-evcore-extbuild-free](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free) (GPL or commercial license terms)~~
 - Infinity (positive or negative) values are not supported on Android/iOS/macOS due to issues described above including a possible crash on iOS/macOS ref: [xpbrew/cordova-sqlite-storage#405](https://github.com/xpbrew/cordova-sqlite-storage/issues/405)
 - A stability issue was reported on the iOS platform version when in use together with [SockJS](http://sockjs.org/) client such as [pusher-js](https://github.com/pusher/pusher-js) at the same time (see [xpbrew/cordova-sqlite-storage#196](https://github.com/xpbrew/cordova-sqlite-storage/issues/196)). The workaround is to call sqlite functions and [SockJS](http://sockjs.org/) client functions in separate ticks (using setTimeout with 0 timeout).
-- SQL errors are reported with incorrect & inconsistent error message on Windows - _error message info not always correct_
-- _Hanging transactions in case of special JSON characters in result columns ref: <https://github.com/brodysoft/cordova-sqlite-evcore-extbuild-free/issues/51>_
-error info ref: [xpbrew/cordova-sqlite-storage#539](https://github.com/xpbrew/cordova-sqlite-storage/issues/539).
-- Issue on default [Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) database access implementation in case of database file name with multi-byte UTF-8 characters ref: [litehelpers/Cordova-sqlite-evcore-extbuild-free#25](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free/issues/25)
-- Issue (truncation issue) with NULL characters (`'\0\` or `'\u0000'`) on Android (default Android-sqlite-evcore-native-driver-free database access implementation) and Windows ref: [litehelpers/Cordova-sqlite-evcore-extbuild-free#27](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free/issues/27)
+- Hanging transactions in case of special JSON characters in result columns ref: [storesafe/cordova-sqlite-evcore-extbuild-free#51](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues/51)
+- SQL errors are reported with incorrect & inconsistent error message on Windows - error message info not always correct, see also [storesafe/cordova-sqlite-storage#539](https://github.com/storesafe/cordova-sqlite-storage/issues/539)
+- Incorrect handling of NULL characters (`'\0\` or `'\u0000'`) on Android (default [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) database access implementation) and Windows ref: [storesafe/cordova-sqlite-evcore-extbuild-free#27](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues/27)
 - Close/delete database bugs described below.
 - When a database is opened and deleted without closing, the iOS/macOS platform version is known to leak resources.
-- It is NOT possible to open multiple databases with the same name but in different locations (iOS/macOS platform version).
+- It is NOT possible to open multiple databases with the same name but in different locations.
 
-_Some additional issues are tracked in [open cordova-sqlite-storage bug-general issues](https://github.com/xpbrew/cordova-sqlite-storage/issues?q=is%3Aissue+is%3Aopen+label%3Abug-general) and [open cordova-sqlite-evcore-extbuild-free bug-general issues](https://github.com/brodysoft/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+is%3Aopen+label%3Abug-general)._
+Some additional issues are tracked in [open cordova-sqlite-storage bug-general issues](https://github.com/storesafe/cordova-sqlite-storage/issues?q=is%3Aissue+is%3Aopen+label%3Abug-general) and [open cordova-sqlite-evcore-extbuild-free bug-general issues](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+is%3Aopen+label%3Abug-general).
 
 <!-- END Known issues -->
 
@@ -615,11 +625,10 @@ _Some additional issues are tracked in [open cordova-sqlite-storage bug-general 
 - The Android platform version cannot properly support more than 100 open database files due to the threading model used.
 - SQL error messages reported by Windows platform version are not consistent with Android/iOS/macOS platform versions.
 - UNICODE `\u2028` (line separator) and `\u2029` (paragraph separator) characters are currently not supported and known to be broken on iOS, macOS, and Android platform versions due to JSON issues reported in [Cordova bug CB-9435](https://issues.apache.org/jira/browse/CB-9435) and [cordova/cordova-discuss#57](https://github.com/cordova/cordova-discuss/issues/57). This is fixed with a workaround for iOS/macOS in: [litehelpers / Cordova-sqlite-evplus-legacy-free](https://github.com/litehelpers/Cordova-sqlite-evplus-legacy-free) and [litehelpers / Cordova-sqlite-evplus-legacy-attach-detach-free](https://github.com/litehelpers/Cordova-sqlite-evplus-legacy-attach-detach-free) (GPL or special commercial license terms) as well as [litehelpers / cordova-sqlite-evmax-ext-workers-legacy-build-free](https://github.com/litehelpers/cordova-sqlite-evmax-ext-workers-legacy-build-free) (GPL or premium commercial license terms).
-- _SELECT BLOB column value type is not supported consistently across all platforms (not supported on Windows). It is recommended to use the built-in HEX function to SELECT BLOB column data in hexadecimal format, working consistently across all platforms. As an alternative: SELECT BLOB in Base64 format using BASE64 function (described elsewhere in this document) is supported by this plugin version (GPL or commercial license options) as well as [litehelpers / cordova-sqlite-ext](https://github.com/litehelpers/cordova-sqlite-ext) (permissive license terms). INLINE BLOB values such as `X'010203'` are supported by the SQLite syntax on all platforms. FUTURE TBD equivalent to UNHEX (supported in MySQL) or conversion of Base-64 string to BLOB is desired._
-- _Database files with certain multi-byte UTF-8 characters are not tested and not expected to work consistently across all platform implementations. The default [Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) database access implementation may not function properly on certain Android versions in case of database file names with emoji and other 4-byte UTF-8 characters ref: [litehelpers/Cordova-sqlite-evcore-extbuild-free#26](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free/issues/26)_
+- SELECT BLOB column value type is not supported consistently across all platforms (not supported on Windows). It is recommended to use the built-in HEX function to SELECT BLOB column data in hexadecimal format, working consistently across all platforms. As an alternative: SELECT BLOB in Base64 format using BASE64 function (described elsewhere in this document) is supported by this plugin version (GPL or commercial license options, as documented above) as well as [brodybits / cordova-sqlite-ext](https://github.com/brodybits/cordova-sqlite-ext) (permissive license terms). INLINE BLOB values such as `X'010203'` are supported by the SQLite syntax on all platforms. FUTURE TBD equivalent to UNHEX (supported in MySQL) or conversion of Base-64 string to BLOB is desired.
+- Database files with certain multi-byte UTF-8 characters are not well tested and not expected to work consistently across all platform implementations. The default [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) database access implementation may not function properly on certain Android versions in case of database file names with emoji and other 4-byte UTF-8 characters ref: [storesafe/cordova-sqlite-evcore-extbuild-free#26](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues/26)
 - Issues with UNICODE `\u0000` character (same as `\0`):
-  - Encoding issue reproduced on Android (default [Android-sqlite-connector](https://github.com/liteglue/Android-sqlite-connector) implementation with [Android-sqlite-ext-native-driver](https://github.com/brodybits/Android-sqlite-ext-native-driver), using Android NDK)
-  - Truncation in case of argument value with UNICODE `\u0000` character reproduced on (WebKit) Web SQL as well as plugin on Android (default [Android-sqlite-connector](https://github.com/liteglue/Android-sqlite-connector) implementation with [Android-sqlite-ext-native-driver](https://github.com/brodybits/Android-sqlite-ext-native-driver), using Android NDK) and Windows
+  - Truncation in case of argument value with UNICODE `\u0000` character reproduced on (WebKit) Web SQL; known issues with this plugin version as referenced above on Android (default `android-sqlite-evcore-native-driver-free` database access implementation) and Windows ([storesafe/cordova-sqlite-evcore-extbuild-free#27](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues/27))
   - SQL error reported in case of inline value string with with UNICODE `\u0000` character on (WebKit) Web SQL, plugin on Android with use of the `androidDatabaseProvider: 'system'` setting, and plugin on _some_ other platforms
 - Case-insensitive matching and other string manipulations on Unicode characters, which is provided by optional ICU integration in the sqlite source and working with recent versions of Android, is not supported for any target platforms.
 - The iOS/macOS platform version uses a thread pool but with only one thread working at a time due to "synchronized" database access.
@@ -633,7 +642,7 @@ _Some additional issues are tracked in [open cordova-sqlite-storage bug-general 
 - Does not support named parameters (`?NNN`/`:AAA`/`@AAAA`/`$AAAA` parameter placeholders as documented in <https://www.sqlite.org/lang_expr.html#varparam> and <https://www.sqlite.org/c3ref/bind_blob.html>) ref: [xpbrew/cordova-sqlite-storage#717](https://github.com/xpbrew/cordova-sqlite-storage/issues/717)
 - User defined functions not supported, due to problems described in [xpbrew/cordova-sqlite-storage#741](https://github.com/xpbrew/cordova-sqlite-storage/issues/741)
 
-_Additional limitations are tracked in [marked cordova-sqlite-storage doc-todo issues](https://github.com/xpbrew/cordova-sqlite-storage/issues?q=is%3Aissue+label%3Adoc-todo) and [marked cordova-sqlite-evcore-extbuild-free doc-todo issues](https://github.com/brodysoft/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+label%3Adoc-todo)._
+Additional limitations are tracked in [open cordova-sqlite-storage doc-todo issues](https://github.com/storesafe/cordova-sqlite-storage/issues?q=is%3Aissue+label%3Adoc-todo) and [open cordova-sqlite-evcore-extbuild-free doc-todo issues](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+label%3Adoc-todo).
 
 <!-- END Other limitations -->
 
@@ -661,7 +670,7 @@ _Additional limitations are tracked in [marked cordova-sqlite-storage doc-todo i
 - Use of `?NNN`/`:AAA`/`@AAAA`/`$AAAA` parameter placeholders as documented in <https://www.sqlite.org/lang_expr.html#varparam> and <https://www.sqlite.org/c3ref/bind_blob.html>) (currently NOT supported by this plugin) ref: [xpbrew/cordova-sqlite-storage#717](https://github.com/xpbrew/cordova-sqlite-storage/issues/717)
 - Single-statement and SQL batch transaction calls with invalid arguments (TBD behavior subject to change)
 - Plugin vs (WebKit) Web SQL transaction behavior in case of an error handler which returns various falsy vs truthy values
-- Other [open Cordova-sqlite-storage testing issues](https://github.com/xpbrew/cordova-sqlite-storage/issues?q=is%3Aissue+is%3Aopen+label%3Atesting)
+- Other [open cordova-sqlite-storage testing issues](https://github.com/storesafe/cordova-sqlite-storage/issues?q=is%3Aissue+is%3Aopen+label%3Atesting) and [open cordova-sqlite-evcore-extbuild-free testing issues](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+is%3Aopen+label%3Atesting)
 
 <!-- END Further testing needed -->
 
@@ -742,8 +751,9 @@ FUTURE TBD: Proper date/time handling will be further tested and documented at s
 - More formal documentation of API, especially for non-standard functions
 - IndexedDBShim adapter (possibly based on IndexedDBShim)
 - Further cleanup of [support](#support) section
-- _Resolve or document [open cordova-sqlite-storage bugs](https://github.com/xpbrew/cordova-sqlite-storage/issues?q=is%3Aissue+is%3Aopen+label%3Abug-general) and [open cordova-sqlite-evcore-extbuild-free bug-general issues](https://github.com/brodysoft/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+is%3Aopen+label%3Abug-general)_
-- _Resolve [cordova-sqlite-storage-help doc-todo issues](https://github.com/xpbrew/cordova-sqlite-storage-help/issues?q=is%3Aissue%20label%3Adoc-todo), [marked cordova-sqlite-storage doc-todo issues](https://github.com/xpbrew/cordova-sqlite-storage/issues?q=is%3Aissue+label%3Adoc-todo), and [marked cordova-sqlite-evcore-extbuild-free doc-todo issues](https://github.com/brodysoft/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+label%3Adoc-todo)_
+- Resolve or document [open cordova-sqlite-storage bug-general issues](https://github.com/storesafe/cordova-sqlite-storage/issues?q=is%3Aissue+is%3Aopen+label%3Abug-general) and [open cordova-sqlite-evcore-extbuild-free bug-general issues](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+is%3Aopen+label%3Abug-general)
+- Resolve [cordova-sqlite-storage-help doc-todo issues](https://github.com/storesafe/cordova-sqlite-storage-help/issues?q=is%3Aissue%20label%3Adoc-todo), [open cordova-sqlite-storage doc-todo issues](https://github.com/storesafe/cordova-sqlite-storage/issues?q=is%3Aissue+label%3Adoc-todo), and [open cordova-sqlite-evcore-extbuild-free doc-todo issues](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+label%3Adoc-todo)
+- Resolve [open cordova-sqlite-storage testing issues](https://github.com/storesafe/cordova-sqlite-storage/issues?q=is%3Aissue+is%3Aopen+label%3Atesting) and [open cordova-sqlite-evcore-extbuild-free testing issues](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues?q=is%3Aissue+is%3Aopen+label%3Atesting)
 
 <!-- END Major TODOs -->
 
@@ -843,7 +853,7 @@ var db = window.sqlitePlugin.openDatabase({name: 'my.db', location: 'default'}, 
 
 **WARNING:** The new "default" location value is different from the old default location used until March 2016 and would break an upgrade for an app that was using the old default setting (`location: 0`, same as using `iosDatabaseLocation: 'Documents'`) on iOS. The recommended solution is to continue to open the database from the same location, using `iosDatabaseLocation: 'Documents'`.
 
-**WARNING 2:** _As described above: by default this plugin uses a non-standard [Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) sqlite database access implementation on Android. In case an application access the **same** database using multiple plugins there is a risk of data corruption (ref: [xpbrew/cordova-sqlite-storage#626](https://github.com/xpbrew/cordova-sqlite-storage/issues/626)) as described in <http://ericsink.com/entries/multiple_sqlite_problem.html> and <https://www.sqlite.org/howtocorrupt.html>. The workaround is to use the `androidDatabaseProvider: 'system'` setting as described in the **Android sqlite implementation** section below._
+**WARNING 2:** _As described above: by default this plugin uses a non-standard [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) sqlite database access implementation on Android. In case an application access the **same** database using multiple plugins there is a risk of data corruption (ref: [storesafe/cordova-sqlite-storage#626](https://github.com/storesafe/cordova-sqlite-storage/issues/626)) as described in <http://ericsink.com/entries/multiple_sqlite_problem.html> and <https://www.sqlite.org/howtocorrupt.html>. The workaround is to use the `androidDatabaseProvider: 'system'` setting as described in the **Android sqlite implementation** section below._
 
 To specify a different location (affects iOS/macOS *only*):
 
@@ -884,7 +894,7 @@ window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(ex
 
 **WARNING:** Again, the new "default" iosDatabaseLocation value is *NOT* the same as the old default location and would break an upgrade for an app using the old default value (0) on iOS.
 
-DEPRECATED ALTERNATIVE to be removed in September 2018:
+DEPRECATED ALTERNATIVE to be removed in an upcoming release:
 - `var db = window.sqlitePlugin.openDatabase({name: "my.db", location: 1}, successcb, errorcb);`
 
 with the `location` option set to one the following choices (affects iOS *only*):
@@ -977,7 +987,7 @@ Use the `location` or `iosDatabaseLocation` option in `sqlitePlugin.openDatabase
 
 ### Android database provider
 
-By default, this plugin uses [litehelpers / Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) with the performance and memory usage enhancements. _To use the built-in Android system database provider implementation instead_:
+By default, this plugin uses [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) with the performance and memory usage enhancements. To use the built-in Android system database provider implementation instead:
 
 ```js
 var db = window.sqlitePlugin.openDatabase({
@@ -990,7 +1000,7 @@ var db = window.sqlitePlugin.openDatabase({
 (Use of the `androidDatabaseImplementation: 2` setting which is now replaced by `androidDatabaseProvider: 'system'` is now deprecated and may be removed in the near future.)
 
 **IMPORTANT:**
-- As described above: by default this plugin uses a non-standard [Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) database access implementation on Android. In case an application access the **same** database using multiple plugins there is a risk of data corruption _(ref: [xpbrew/cordova-sqlite-storage#626](https://github.com/xpbrew/cordova-sqlite-storage/issues/626))_ as described in <http://ericsink.com/entries/multiple_sqlite_problem.html> and <https://www.sqlite.org/howtocorrupt.html>. _The workaround is to use the `androidDatabaseProvider: 'system'` setting as described here_.
+- As described above: by default this plugin uses a non-standard [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) database access implementation on Android. _In case an application access the **same** database using multiple plugins there is a risk of data corruption ref: [storesafe/cordova-sqlite-storage#626](https://github.com/storesafe/cordova-sqlite-storage/issues/626) as described in <http://ericsink.com/entries/multiple_sqlite_problem.html> and <https://www.sqlite.org/howtocorrupt.html>. The workaround is to use the `androidDatabaseProvider: 'system'` setting as described here._
 - In case of the `androidDatabaseProvider: 'system'` setting, [xpbrew/cordova-sqlite-storage#193](https://github.com/xpbrew/cordova-sqlite-storage/issues/193) reported (as observed by a number of app developers in the past) that in certain Android versions, if the app is stopped or aborted without closing the database then there is an unexpected database lock and the data that was inserted is lost. The workaround is described below.
 
 <!-- END Android database provider -->
@@ -1003,7 +1013,7 @@ var db = window.sqlitePlugin.openDatabase({
 
 The cause of this issue remains unknown. Of interest: [android / platform_external_sqlite commit d4f30d0d15](https://github.com/android/platform_external_sqlite/commit/d4f30d0d1544f8967ee5763c4a1680cb0553039f) which references and includes the sqlite commit at: http://www.sqlite.org/src/info/6c4c2b7dba
 
-_This is *not* an issue when the default [litehelpers / Android-sqlite-evcore-native-driver-free](https://github.com/litehelpers/Android-sqlite-evcore-native-driver-free) database implementation is used, which is the case when no `androidDatabaseProvider` or `androidDatabaseImplementation` setting is used._
+_This is *not* an issue when the default [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) database implementation is used, which is the case when no `androidDatabaseProvider` or `androidDatabaseImplementation` setting is used._
 
 There is an optional workaround that simply closes and reopens the database file at the end of every transaction that is committed. The workaround is enabled by opening the database with options as follows:
 
@@ -1470,9 +1480,10 @@ cordova plugin add https://github.com/mobilexag/cordova-sqlite-evplus-ext-free #
 
 **Additional Cordova CLI NOTES:**
 
-- In case of Cordova CLI pre-7.0 it is recommended to add plugins including standard plugins such as `cordova-plugin-whitelist` with the `--save` flag to track these in `config.xml` (automatically saved in `config.xml` starting with Cordova CLI 7.0).
-- In general there is no need to keep the Cordova `platforms` subdirectory tree in source code control (such as git). In case ALL plugins are tracked in `config.xml` (automatic starting with Cordova CLI 7.0, `--save` flag needed for Cordova CLI pre-7.0) then there is no need to keep the `plugins` subdirectory tree in source code control either.
-- It may be necessary to use `cordova prepare` in case of cordova-ios older than `4.3.0` (Cordova CLI `6.4.0`).
+- As stated above:
+  - In case of Cordova CLI pre-7.0 it is recommended to add plugins including standard plugins such as `cordova-plugin-whitelist` with the `--save` flag to track these in `config.xml` (automatically saved in `config.xml` / `package.json` starting with Cordova CLI 7.0).
+  - In general there is no need to keep the Cordova `platforms` subdirectory tree in source code control (such as git). In case ALL plugins are tracked in `config.xml` or `package.json` (automatic starting with Cordova CLI 7.0, `--save` flag needed for Cordova CLI pre-7.0) then there is no need to keep the `plugins` subdirectory tree in source code control either.
+- It may be necessary to use `cordova prepare` in case of `cordova-ios` older than `4.3.0` (Cordova CLI `6.4.0`) or `cordova-osx`.
 - In case of problems with building and running it is recommended to try again after `cordova prepare`.
 - If you cannot build for a platform after `cordova prepare`, you may have to remove the platform and add it again, such as:
 

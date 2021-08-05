@@ -4,6 +4,32 @@
 
 - SQLite 3.36.0 update for multiple platforms (...)
 
+## cordova-sqlite-evcore-feat-android-db-location 0.10.0-dev
+
+### cordova-sqlite-evcore-common-free 0.6.0-dev
+
+- update Windows minimum & target platform versions - BREAKING CHANGE
+
+## cordova-sqlite-evcore-feat-android-db-location 0.8.0
+
+- refactor: update androidDatabaseLocation error messages
+
+### cordova-sqlite-evcore-commoncore-free 0.3.0
+
+### cordova-sqlite-ext-common 4.0.0
+
+### cordova-sqlite-storage-commoncore 2.0.0
+
+- refactor: clean up imports for Android
+- Fix plugin param name for macOS ("osx") - *tested* with Cordova 9 and cordova-osx@5
+- Drop support for Windows on ARM (Windows Mobile)
+
+#### cordova-sqlite-storage 5.0.1
+
+- enable RENAME table with view test - from December 2019 SQLite crash report, fixed in 2020 ref:
+  - http://sqlite.1065341.n5.nabble.com/Crash-Bug-Report-tc109903.html
+  - https://github.com/xpbrew/cordova-sqlite-storage/issues/904
+
 # cordova-sqlite-evplus-ext-free 0.5.0-rc3
 
 - apply SQLite 3.34.0 update
@@ -45,7 +71,7 @@
 
 #### cordova-sqlite-storage 3.4.1
 
-- SQLite 3.31.1 update from cordova-sqlite-storage-dependencies@2.1.1
+- SQLite 3.30.1 update from cordova-sqlite-storage-dependencies@2.1.1
 
 #### cordova-sqlite-storage 3.4.0
 

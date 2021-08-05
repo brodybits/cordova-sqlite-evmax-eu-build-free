@@ -92,8 +92,8 @@ var mytests = function() {
         it(suiteName + 'Check actual sqlite version', function(done) {
           if (isWebSql) pending('NOT DETERMINISTIC for (WebKit) Web SQL');
           if (!isWebSql && isAndroid && isImpl2) pending('NOT DETERMINISTIC for plugin on Android with androidDatabaseImplementation: 2');
-          // XXX TBD REMOVE AFTER SQLITE 3.36.0 UPDATE:
-          pending('[TBD] SKIP FOR NOW');
+          // XXX NOW GONE [SQLITE 3.36.0 UPDATE]:
+          // pending('[TBD] SKIP FOR NOW');
 
           var db = openDatabase("check-actual-sqlite-version.db", "1.0", "Demo", DEFAULT_SIZE);
 
@@ -106,7 +106,7 @@ var mytests = function() {
               expect(rs).toBeDefined();
               expect(rs.rows).toBeDefined();
               expect(rs.rows.length).toBe(1);
-              expect(rs.rows.item(0).myResult).toBe('3.34.0');
+              expect(rs.rows.item(0).myResult).toBe('3.36.0');
 
               // Close (plugin only) & finish:
               (isWebSql) ? done() : db.close(done, done);
