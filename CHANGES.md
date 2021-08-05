@@ -2,7 +2,8 @@
 
 # cordova-sqlite-evplus-ext-free 0.6.0-dev
 
-- SQLite 3.36.0 update for multiple platforms (...)
+- SQLite 3.36.0 update for multiple platforms
+- Android evcore NDK update for Android 11 & target SDK 30
 
 ## cordova-sqlite-evcore-feat-android-db-location 0.10.0-dev
 
