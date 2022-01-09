@@ -2160,6 +2160,46 @@ var mytests = function() {
           });
         }, MYTIMEOUT);
 
+        it(suiteName + 'string parameter manipulation test with EU characters - bug fix from brodybits/sqlite3-eu#1', function(done) {
+          // ref:
+          // - brodybits/sqlite3-eu#1 - https://github.com/brodybits/sqlite3-eu/pull/1
+          // - mobilexag#cordova-sqlite-evplus-ext-free#34 - https://github.com/mobilexag/cordova-sqlite-evplus-ext-free/issues/34
+          var db = openDatabase('UTF8-combo-select-upper-sqlite3-eu-pr-1-test.db');
+
+          db.transaction(function(tx) {
+
+            tx.executeSql('SELECT UPPER(?) AS upper_result', ['Test đ ď ð abc'], function(ignored, rs) {
+              expect(rs).toBeDefined();
+              expect(rs.rows).toBeDefined();
+              expect(rs.rows.length).toBe(1);
+              // SQLite3 with ICU-UNICODE for:
+              // - Web SQL on [...]
+              // - plugin with androidDatabaseImplementation: 2 on
+              //   [...]
+              // SQLite3 with EU character support for plugin on:
+              // - Android with androidDatabaseImplementation: 'default'
+              // - iOS
+              // - mac OS ("osx")
+              // - Windows
+              if ((isWebSql && isChromeBrowser) ||
+                  (!isWebSql && !(isAndroid && isImpl2)) ||
+                  (isAndroid && ((isWebSql && !(/Android 4.[1-3]/.test(navigator.userAgent))) || (isImpl2 && /Android [5-9]/.test(navigator.userAgent)))))
+                expect(rs.rows.item(0).upper_result).toBe('TEST Đ Ď Ð ABC');
+              else
+                expect(rs.rows.item(0).upper_result).toBe('TEST XXX XXX');
+
+              // Close (plugin only) & finish:
+              (isWebSql) ? done() : db.close(done, done);
+            });
+          }, function(error) {
+            // NOT EXPECTED:
+            expect(false).toBe(true);
+            expect(error.message).toBe('--');
+            // Close (plugin only) & finish:
+            (isWebSql) ? done() : db.close(done, done);
+          });
+        }, MYTIMEOUT);
+
         it(suiteName + 'HEX value of string with 25 emojis [ENCODING ISSUE NOW RESOLVED on Android (default evcore NDK provider) on Android post-5.x (non-standard encoding on Android 4.x/5.x); default sqlite HEX encoding: UTF-6le on Windows & Android 4.1-4.3 (WebKit) Web SQL, UTF-8 otherwise]', function(done) {
           // ref:
           // - litehelpers/Cordova-sqlite-evcore-extbuild-free#44

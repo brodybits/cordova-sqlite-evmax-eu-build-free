@@ -1,5 +1,13 @@
 # Changes
 
+# cordova-sqlite-evplus-ext-free 0.6.1-rc01
+
+- update SQLite to 3.37.2 for all platforms - resolves an extremely rare corruption issue that was introduced in SQLite 3.35.0 ref:
+  - https://sqlite.org/forum/forumpost/ac381d64d8
+  - https://sqlite.org/releaselog/3_37_2.html
+- update sqlite3-eu with a bug fix from brodybits/sqlite3-eu#1 ref: https://github.com/brodybits/sqlite3-eu/pull/1
+- add quick string test case for bug fix from brodybits/sqlite3-eu PR 1
+
 # cordova-sqlite-evplus-ext-free 0.6.0
 
 - SQLite 3.36.0 update for multiple platforms

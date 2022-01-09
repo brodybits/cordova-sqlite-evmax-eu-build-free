@@ -206,7 +206,7 @@ See the [Sample section](#sample) for a sample with a more detailed explanation 
   - BASE64 integrated from [brodybits / sqlite3-base64](https://github.com/brodybits/sqlite3-base64), using [brodybits / libb64-encode](https://github.com/brodybits/libb64-encode) (based on <http://libb64.sourceforge.net/> by Chris Venter, public domain)
   - _REGEXP for Android (default evcore NDK database implementation), iOS, and macOS using [brodybits / sqlite3-regexp-cached](https://github.com/brodybits/sqlite3-regexp-cached) (based on <http://git.altlinux.org/people/at/packages/?p=sqlite3-pcre.git> by Alexey Tourbin, public domain)_
   - replacement `UPPER` & `LOWER` string functions from [brodybits / sqlite3-eu](https://github.com/brodybits/sqlite3-eu) with support for some EU characters
-- SQLite __`3.36.0`__ included when building (all platforms), with the following compile-time definitions:
+- SQLite __`3.37.2`__ included when building (all platforms), with the following compile-time definitions:
   - `SQLITE_THREADSAFE=1`
   - `SQLITE_DEFAULT_SYNCHRONOUS=3` (EXTRA DURABLE build setting) ref: [xpbrew/cordova-sqlite-storage#736](https://github.com/xpbrew/cordova-sqlite-storage/issues/736)
   - `SQLITE_LOCKING_STYLE=1` on iOS/macOS ONLY
