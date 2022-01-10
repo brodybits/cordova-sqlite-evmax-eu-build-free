@@ -66,7 +66,7 @@ __XXX TODO evplus feature MISSING in this plugin version: iOS performance enhanc
 
 ### Multiple SQLite problem on Android
 
-__This plugin uses non-standard sqlite database access implementation on Android from <https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free/tree/custom-evcore-eu-support-2021>. In case an application access the SAME database using multiple plugins there is a risk of data corruption ref: [storesafe/cordova-sqlite-storage#626](https://github.com/storesafe/cordova-sqlite-storage/issues/626) as described in <http://ericsink.com/entries/multiple_sqlite_problem.html> and <https://www.sqlite.org/howtocorrupt.html>.__
+__This plugin uses non-standard sqlite database access implementation on Android from <https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free/tree/evcore-eu-support-2022>. In case an application access the SAME database using multiple plugins there is a risk of data corruption ref: [storesafe/cordova-sqlite-storage#626](https://github.com/storesafe/cordova-sqlite-storage/issues/626) as described in <http://ericsink.com/entries/multiple_sqlite_problem.html> and <https://www.sqlite.org/howtocorrupt.html>.__
 
 The workaround is to use the `androidDatabaseProvider: 'system'` setting as described in the [Android database provider](#android-database-provider) section below:
 
@@ -234,7 +234,7 @@ See the [Sample section](#sample) for a sample with a more detailed explanation 
   - <https://www.sqlite.org/releaselog/3_26_0.html>
 - The iOS database location is now mandatory, as documented below.
 - This version branch supports the use of two (2) possible Android sqlite database implementations:
-  - default: high-performance, lightweight NDK library (C-language implementation) from: <https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free/tree/custom-evcore-eu-support-2021>
+  - default: high-performance, lightweight NDK library (C-language implementation) from: <https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free/tree/evcore-eu-support-2022>
   - optional: Android system database implementation, using the `androidDatabaseProvider: 'system'` setting in `sqlitePlugin.openDatabase()` call as described in the [Android database provider](#android-database-provider) section below.
 - The following feature is available in __[brodybits / cordova-sqlite-ext](https://github.com/brodybits/cordova-sqlite-ext)__ (with permissive license terms, missing performance enhancements from `android-sqlite-evcore-ndk-driver-free`), MISSING in this plugin version:
   - Pre-populated database (Android/iOS/macOS/Windows)
@@ -268,7 +268,7 @@ See the [Sample section](#sample) for a sample with a more detailed explanation 
 
 - This plugin version branch includes premium improvements to the internal JSON interface between Javascript and native parts on Android, iOS, and macOS which improves the performance and resolves memory issues in case of some very large SQL batches.
 - Custom Android database location (supports external storage directory)
-- For Android platform this plugin version uses the lightweight, performant database access implementation from <https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free/tree/custom-evcore-eu-support-2021>, with some premium improvements to the internal JSON interface (by default configuration), now with a solution for Android 11 devices and target SDK 30 (FIXES [storesafe/cordova-sqlite-evcore-extbuild-free#56](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues/56)). The [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) is a NDK library (with C-language implementation) for JSON and SQL statement handling which processes large batches in less than half the time compared to [`cordova-sqlite-storage`](https://github.com/storesafe/cordova-sqlite-storage), as measured by: [`brodybits/cordova-sqlite-perftest`](https://github.com/brodybits/cordova-sqlite-perftest).
+- For Android platform this plugin version uses the lightweight, performant database access implementation from <https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free/tree/evcore-eu-support-2022>, with some premium improvements to the internal JSON interface (by default configuration), now with a solution for Android 11 devices and target SDK 30 (FIXES [storesafe/cordova-sqlite-evcore-extbuild-free#56](https://github.com/storesafe/cordova-sqlite-evcore-extbuild-free/issues/56)). The [`android-sqlite-evcore-ndk-driver-free`](https://github.com/storesafe/android-sqlite-evcore-ndk-driver-free) is a NDK library (with C-language implementation) for JSON and SQL statement handling which processes large batches in less than half the time compared to [`cordova-sqlite-storage`](https://github.com/storesafe/cordova-sqlite-storage), as measured by: [`brodybits/cordova-sqlite-perftest`](https://github.com/brodybits/cordova-sqlite-perftest).
 - This plugin version includes the following extra (non-standard) features: BASE 64 (all platforms Android/iOS/macOS/Windows), REGEXP (Android/iOS/macOS)
 - _Using version of SQLite3 (...) with window functions and recent security updates:_
   - [xpbrew/cordova-sqlite-storage#895](https://github.com/xpbrew/cordova-sqlite-storage/issues/895)
