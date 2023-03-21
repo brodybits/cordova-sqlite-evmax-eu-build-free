@@ -1,4 +1,4 @@
-# Cordova/PhoneGap sqlite storage evmax EU common version branch - super-premium enterprise version with super-premium stability and performance improvements with limited extra features
+# Cordova/PhoneGap sqlite storage evmax EU version - super-premium enterprise version with super-premium stability and performance improvements with limited extra features
 
 Native SQLite component with API based on HTML5/[Web SQL (DRAFT) API](http://www.w3.org/TR/webdatabase/) for the following platforms:
 - Android
@@ -52,9 +52,7 @@ under consideration:
 
 ## About this plugin version
 
-Super-premium enterprise version with additional performance and stability improvements for Android, iOS, and macOS, including workarounds for super-large INSERT transactions and SELECT results on Android - with limited extra features (missing pre-populated database support), using the `before_plugin_install` hook to fetch the sqlite3 component dependencies from <https://github.com/brodybits/cordova-sqlite-evmax-free-dependencies-dev>.
-
-NOTE: This plugin version has external sqlite3 dependencies that are installed by a before_plugin_install hook. FUTURE TBD sqlite3 dependencies will be included if needed by any commercial users for PhoneGap Build or any other build tools.
+Super-premium enterprise version with additional performance and stability improvements for Android, iOS, and macOS, including workarounds for super-large INSERT transactions and SELECT results on Android - with limited extra features (missing pre-populated database support).
 
 <!-- FUTURE TBD critical bug notices for this plugin version -->
 
@@ -199,8 +197,6 @@ See the [Sample section](#sample) for a sample with a more detailed explanation 
   - Cordova pre-7.0.0 do not automatically save the state of added plugins and platforms (`--save` flag is needed for Cordova pre-7.0.0)
   - It may be needed to use `cordova prepare` in case of cordova-ios pre-4.3.0 (Cordova CLI `6.4.0`).
   - Cordova versions older than `6.0.0` are missing the `cordova-ios@4.0.0` security fixes.
-- This plugin version uses a `before_plugin_install` hook to fetch and install <https://github.com/brodybits/cordova-sqlite-evmax-free-dependencies-dev/tree/cordova-sqlite-evmax-free-dependencies-eu-support> (with SQLite3 and android-sqlite-evmax-ndk-driver-free components) from npm.
-- Use of other systems such as Cordova Plugman, PhoneGap CLI, PhoneGap Build, and Intel XDK is no longer supported by this plugin version since they do not honor the `before_plugin_install` hook. The supported solution is to use [litehelpers / Cordova-sqlite-evcore-extbuild-free](https://github.com/litehelpers/Cordova-sqlite-evcore-extbuild-free) (GPL or commercial license terms); deprecated alternative with permissive license terms is available at: [brodybits / cordova-sqlite-legacy-build-support](https://github.com/brodybits/cordova-sqlite-legacy-build-support) (very limited testing, very limited updates).
 - This plugin version includes the following extra (non-standard) features:
   - BASE64 and BLOBFROMBASE64 integrated from [brodybits / sqlite3-base64](https://github.com/brodybits/sqlite3-base64), using [brodybits / libb64-core](https://github.com/brodybits/libb64-core) (based on <http://libb64.sourceforge.net/> by Chris Venter, public domain)
   - REGEXP for Android (default Android-sqlite-connector database implementation), iOS, and macOS using [brodybits / sqlite3-regexp-cached](https://github.com/brodybits/sqlite3-regexp-cached) (based on <http://git.altlinux.org/people/at/packages/?p=sqlite3-pcre.git> by Alexey Tourbin, public domain)
