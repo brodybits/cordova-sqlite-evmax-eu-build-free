@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova-sqlite-evmax-eu-common-free"
-    version="0.0.1-dev">
+    version="0.0.1-pre01">
 
     <name>Cordova sqlite storage - evmax EU build version with premium stability performance improvements including workaround for super-large INSERT transactions and SELECT results on Android (with external sqlite3 dependencies)</name>
 
