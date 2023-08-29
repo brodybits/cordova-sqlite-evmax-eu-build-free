@@ -71,7 +71,7 @@
     </platform>
 
     <!-- macOS (osx) -->
-    <platform name="osx">
+    <platform name="disable-osx">
         <config-file target="config.xml" parent="/*">
             <feature name="SQLitePlugin">
                 <param name="osx-package" value="SQLitePlugin" />
@@ -107,7 +107,7 @@
     </platform>
 
     <!-- windows -->
-    <platform name="windows">
+    <platform name="disable-windows">
         <js-module src="src/windows/sqlite-proxy.js" name="SQLiteProxy">
             <runs />
         </js-module>
