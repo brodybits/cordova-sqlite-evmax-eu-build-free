@@ -1,5 +1,7 @@
 # Changes
 
+# cordova-sqlite-evmax-eu-build-free 0.0.1-pre02dev
+
 # cordova-sqlite-evmax-eu-build-free 0.0.1-pre01
 
 ## cordova-sqlite-evmax-eu-common-free 0.0.1-dev
