@@ -364,7 +364,7 @@ var mytests = function() {
 
         it(suiteName + 'Math functions test', function(done) {
           if (isWebSql) pending('SKIP for (WebKit) Web SQL');
-          if (isAndroid) pending('NOT IMPLEMENTED for Android');
+          if (isAndroid && isImpl2) pending('SKIP (NOT SUPPORTED) for android.database'); // XXX
           if (isMac) pending('NOT SUPPORTED for macOS');
           if (isWindows) pending('NOT IMPLEMENTED for Windows');
 

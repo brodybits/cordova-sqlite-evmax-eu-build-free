@@ -200,7 +200,7 @@ See the [Sample section](#sample) for a sample with a more detailed explanation 
 - This plugin version includes the following extra (non-standard) features:
   - BASE64 and BLOBFROMBASE64 integrated from [brodybits / sqlite3-base64](https://github.com/brodybits/sqlite3-base64), using [brodybits / libb64-core](https://github.com/brodybits/libb64-core) (based on <http://libb64.sourceforge.net/> by Chris Venter, public domain)
   - REGEXP for Android (default Android-sqlite-connector database implementation), iOS, ~~and macOS~~ using [brodybits / sqlite3-regexp-cached](https://github.com/brodybits/sqlite3-regexp-cached) (based on <http://git.altlinux.org/people/at/packages/?p=sqlite3-pcre.git> by Alexey Tourbin, public domain)
-- SQLite __`3.41.1`__ included when building (all platforms), with the following compile-time definitions:
+- SQLite __`3.43.0`__ included when building (all platforms), with the following compile-time definitions:
   - `SQLITE_THREADSAFE=1`
   - `SQLITE_DEFAULT_SYNCHRONOUS=3` (EXTRA DURABLE build setting) ref: [xpbrew/cordova-sqlite-storage#736](https://github.com/xpbrew/cordova-sqlite-storage/issues/736)
   - `SQLITE_LOCKING_STYLE=1` on iOS/~~macOS~~ ONLY
@@ -219,7 +219,7 @@ See the [Sample section](#sample) for a sample with a more detailed explanation 
   - `SQLITE_ENABLE_RTREE`
   - `SQLITE_ENABLE_JSON1`
   - `SQLITE_ENABLE_RTREE`
-  - `SQLITE_ENABLE_MATH_FUNCTIONS` - iOS only
+  - `SQLITE_ENABLE_MATH_FUNCTIONS` - Android & iOS
   - `SQLITE_DEFAULT_PAGE_SIZE=4096` - new default page size ref: <http://sqlite.org/pgszchng2016.html>
   - `SQLITE_DEFAULT_CACHE_SIZE=-2000` - new default cache size ref: <http://sqlite.org/pgszchng2016.html>
   - ~~`SQLITE_OS_WINRT` (Windows only)~~
