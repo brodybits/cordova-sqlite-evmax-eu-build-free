@@ -4,6 +4,10 @@
 
 - disable macOS ("osx") & Windows platform support in this plugin version branch
 
+### cordova-sqlite-evcore-common-free 0.7.2-dev
+
+- enable SQLite3 math functions for iOS (only), with new test case feature ref: https://www.sqlite.org/lang_mathfunc.html
+
 # cordova-sqlite-evmax-eu-build-free 0.0.1-pre01
 
 ## cordova-sqlite-evmax-eu-common-free 0.0.1-dev
