@@ -1,6 +1,6 @@
 # Changes
 
-# cordova-sqlite-evmax-eu-build-free 0.0.1-pre02dev
+# cordova-sqlite-evmax-eu-build-free 0.0.1-pre02
 
 - SQLite 3.43.0 update, with math functions for Android
 - disable macOS ("osx") & Windows platform support in this plugin version branch
