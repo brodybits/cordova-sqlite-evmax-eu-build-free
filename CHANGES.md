@@ -2,6 +2,7 @@
 
 # cordova-sqlite-evmax-eu-build-free 0.0.1-pre02dev
 
+- SQLite 3.43.0 update
 - disable macOS ("osx") & Windows platform support in this plugin version branch
 
 ### cordova-sqlite-evcore-common-free 0.7.2-dev
